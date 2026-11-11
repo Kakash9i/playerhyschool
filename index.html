@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hyschool IPTV Admin Panel</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+    <div id="toast-container"></div>
+    
+    <!-- Login Screen -->
+    <div id="login-screen" class="screen">
+        <div class="login-box glassmorphism">
+            <h1>Hyschool Admin</h1>
+            
+            <div class="form-group" style="margin-top: 20px;">
+                <input type="text" id="login-user" placeholder="Username" autocomplete="off">
+            </div>
+            <div class="form-group">
+                <input type="password" id="login-pass" placeholder="Passwort" autocomplete="off">
+            </div>
+            
+            <details class="advanced-opts">
+                <summary>Erweiterte Optionen</summary>
+                <div class="form-group mt-10">
+                    <input type="text" id="login-hwid" placeholder="Custom HWID / Key (Optional)" autocomplete="off">
+                </div>
+            </details>
+
+            <div class="form-group checkbox-group mt-10">
+                <label>
+                    <input type="checkbox" id="login-remember"> Login merken
+                </label>
+            </div>
+            
+            <p id="login-error" class="error-text"></p>
+            
+            <button id="login-btn" class="btn-primary full-width">Einloggen</button>
+        </div>
+    </div>
+
+    <!-- Dashboard Screen -->
+    <div id="dashboard-screen" class="screen hidden">
+        <header class="dashboard-header glassmorphism glow-border">
+            <h2>Hyschool Admin Control - [<span id="current-user"></span>]</h2>
+            <div class="header-actions">
+                <button id="logout-btn" class="btn-secondary">Logout</button>
+            </div>
+        </header>
+
+        <div class="dashboard-grid">
+            <!-- Left Column -->
+            <div class="left-col">
+                <div class="panel glassmorphism">
+                    <h3 class="panel-title">Kunden Zugang hinzufügen / bearbeiten</h3>
+                    <div class="form-grid">
+                        <div class="input-wrapper full-width">
+                            <label>Xtream Server URL</label>
+                            <input type="text" id="url-input" placeholder="http://domain.com:8080">
+                        </div>
+                        <div class="input-wrapper">
+                            <label>Kunden MAC / HWID</label>
+                            <input type="text" id="mac-input" placeholder="00:1A:79:XX:XX:XX">
+                        </div>
+                        <div class="input-wrapper">
+                            <label>Name / Notiz</label>
+                            <input type="text" id="name-input" placeholder="Nur für dich sichtbar">
+                        </div>
+                        <div class="input-wrapper">
+                            <label>Xtream Username</label>
+                            <input type="text" id="user-input" placeholder="Benutzername">
+                        </div>
+                        <div class="input-wrapper">
+                            <label>Xtream Passwort</label>
+                            <input type="text" id="pass-input" placeholder="Passwort">
+                        </div>
+                    </div>
+                    <button id="save-user-btn" class="btn-primary full-width mt-10">Kunde Speichern</button>
+                </div>
+
+                <div class="panel glassmorphism table-panel">
+                    <div class="table-header-controls">
+                        <h3 class="panel-title mb-0">Kundenliste</h3>
+                        <button id="refresh-btn" class="btn-secondary small">Aktualisieren</button>
+                    </div>
+                    <div class="table-wrapper">
+                        <table id="users-table">
+                            <thead>
+                                <tr>
+                                    <th>MAC</th>
+                                    <th>Name</th>
+                                    <th>Server URL</th>
+                                    <th>Username</th>
+                                    <th>Passwort</th>
+                                    <th>Aktionen</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Rows injected via JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column -->
+            <div class="right-col">
+                <div class="panel glassmorphism log-panel">
+                    <div class="panel-header">
+                        <h3 class="panel-title mb-0">Letzte Aktivitäten</h3>
+                        <button id="clear-logs-btn" class="btn-danger small">Logs leeren</button>
+                    </div>
+                    <div id="logs-list" class="list-container"></div>
+                </div>
+
+                <div class="panel glassmorphism chat-panel">
+                    <div class="panel-header">
+                        <h3 class="panel-title mb-0">Admin Chat</h3>
+                        <button id="clear-chat-btn" class="btn-danger small">Chat leeren</button>
+                    </div>
+                    <div id="chat-list" class="list-container"></div>
+                    <div class="chat-input-area">
+                        <input type="text" id="chat-input" placeholder="Nachricht schreiben...">
+                        <button id="chat-send-btn" class="btn-primary">Senden</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for PIN -->
+    <div id="pin-modal" class="modal hidden">
+        <div class="modal-content glassmorphism">
+            <h3>Sicherheitsprüfung</h3>
+            <p>Bitte Admin-PIN eingeben:</p>
+            <input type="password" id="pin-input" placeholder="PIN" autocomplete="new-password">
+            <div class="modal-actions">
+                <button id="pin-cancel" class="btn-secondary">Abbrechen</button>
+                <button id="pin-confirm" class="btn-primary">Bestätigen</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="./script.js"></script>
+</body>
+</html>
