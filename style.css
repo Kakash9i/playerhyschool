@@ -1,0 +1,79 @@
+:root {
+  --bg: #09090b;
+  --card-bg: #121216;
+  --card-hover: #18181d;
+  --card-border: rgba(255, 255, 255, 0.08);
+  --gold-border: rgba(250, 204, 21, 0.28);
+  --accent: #facc15;
+  --accent-hover: #eab308;
+  --accent-glow: rgba(250, 204, 21, 0.22);
+  --text: #f4f4f5;
+  --text-muted: #9ca3af;
+  --success: #10b981;
+  --danger: #ef4444;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: var(--bg);
+  background-image:
+    radial-gradient(circle at 12% 20%, rgba(250, 204, 21, 0.07), transparent 30%),
+    radial-gradient(circle at 88% 80%, rgba(250, 204, 21, 0.05), transparent 30%);
+  color: var(--text);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  min-height: 100vh;
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* Modal Overlay & Card — vertical column layout, never horizontal flex */
+.modal-overlay {
+  position: fixed !important;
+  inset: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  background: rgba(0, 0, 0, 0.84) !important;
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
+  display: none;
+  align-items: center !important;
+  justify-content: center !important;
+  z-index: 2000 !important;
+  padding: 20px !important;
+}
+
+.modal-overlay.open {
+  display: flex !important;
+}
+
+.modal,
+.modal-card {
+  position: relative !important;
+  top: auto !important;
+  left: auto !important;
+  right: auto !important;
+  bottom: auto !important;
+  background: #121216 !important;
+  border: 1px solid rgba(250, 204, 21, 0.35) !important;
+  border-radius: 18px !important;
+  width: 100% !important;
+  max-width: 560px !important;
+  height: auto !important;
+  max-height: 92vh !important;
+  overflow-y: auto !important;
+  padding: 26px !important;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.92), 0 0 30px rgba(250, 204, 21, 0.08) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: stretch !important;
+  justify-content: flex-start !important;
+  text-align: left !important;
+  gap: 0 !important;
+}
