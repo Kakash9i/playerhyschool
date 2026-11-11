@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HYSCHOOL PLAYER — Admin Panel</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #09090b;
+      --card-bg: #121215;
+      --card-border: rgba(255, 255, 255, 0.07);
+      --accent: #facc15;
+      --accent-glow: rgba(250, 204, 21, 0.25);
+      --text: #f4f4f5;
+      --text-muted: #71717a;
+      --success: #10b981;
+      --danger: #ef4444;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', -apple-system, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* LOGIN SCREEN */
+    #login-screen {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: var(--bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 20px;
+    }
+
+    .login-box {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 36px;
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.8), 0 0 30px var(--accent-glow);
+    }
+
+    .login-logo {
+      width: 64px;
+      height: 64px;
+      background: var(--accent);
+      color: #09090b;
+      border-radius: 16px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      font-weight: 900;
+      margin-bottom: 20px;
+      box-shadow: 0 0 25px var(--accent-glow);
+    }
+
+    .login-title {
+      font-size: 20px;
+      font-weight: 900;
+      margin-bottom: 6px;
+      letter-spacing: 0.5px;
+    }
+
+    .login-title span {
+      color: var(--accent);
+    }
+
+    .login-sub {
+      color: var(--text-muted);
+      font-size: 12px;
+      margin-bottom: 24px;
+    }
+
+    header {
+      background: #0d0d10;
+      border-bottom: 1px solid var(--card-border);
+      padding: 18px 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .brand-logo {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      background: var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #09090b;
+      font-weight: 900;
+      font-size: 20px;
+      box-shadow: 0 0 16px var(--accent-glow);
+    }
+
+    .brand-title {
+      font-size: 18px;
+      font-weight: 900;
+      letter-spacing: 0.5px;
+    }
+
+    .brand-title span {
+      color: var(--accent);
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .btn {
+      padding: 9px 16px;
+      border-radius: 8px;
+      font-size: 12.5px;
+      font-weight: 700;
+      cursor: pointer;
+      border: 1px solid transparent;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #09090b;
+    }
+    .btn-primary:hover {
+      filter: brightness(1.1);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 14px var(--accent-glow);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--text);
+      border-color: var(--card-border);
+    }
+    .btn-outline:hover {
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .btn-danger {
+      background: rgba(239, 68, 68, 0.15);
+      color: var(--danger);
+      border-color: rgba(239, 68, 68, 0.3);
+    }
+    .btn-danger:hover {
+      background: var(--danger);
+      color: #fff;
+    }
+
+    main {
+      flex: 1;
+      padding: 32px;
+      max-width: 1400px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+
+    .stat-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 20px;
+    }
+
+    .stat-card .label {
+      font-size: 11px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      margin-bottom: 6px;
+    }
+
+    .stat-card .value {
+      font-size: 26px;
+      font-weight: 900;
+      color: var(--text);
+    }
+
+    .stat-card .value.highlight {
+      color: var(--accent);
+    }
+
+    .table-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      overflow: hidden;
+    }
+
+    .table-header {
+      padding: 18px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    .table-title {
+      font-size: 15px;
+      font-weight: 800;
+    }
+
+    .search-input {
+      background: #09090b;
+      border: 1px solid var(--card-border);
+      color: var(--text);
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-size: 12.5px;
+      outline: none;
+      width: 280px;
+    }
+    .search-input:focus {
+      border-color: var(--accent);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 13px;
+    }
+
+    th {
+      background: rgba(255, 255, 255, 0.02);
+      color: var(--text-muted);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 14px 20px;
+      font-weight: 700;
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    td {
+      padding: 16px 20px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      vertical-align: middle;
+    }
+
+    tr:hover td {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .hwid-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11.5px;
+      background: rgba(255, 255, 255, 0.06);
+      padding: 4px 8px;
+      border-radius: 6px;
+      color: #e4e4e7;
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 11.5px;
+      font-weight: 700;
+    }
+
+    .status-badge.active {
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--success);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .status-badge.inactive {
+      background: rgba(239, 68, 68, 0.15);
+      color: var(--danger);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    .xtream-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+    .xtream-pill.configured {
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    /* Modal */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(8px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      padding: 20px;
+    }
+    .modal-overlay.open {
+      display: flex;
+    }
+
+    .modal {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      width: 100%;
+      max-width: 520px;
+      padding: 28px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.8);
+    }
+
+    .modal-title {
+      font-size: 17px;
+      font-weight: 900;
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    .form-control {
+      width: 100%;
+      background: #09090b;
+      border: 1px solid var(--card-border);
+      color: var(--text);
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      outline: none;
+    }
+    .form-control:focus {
+      border-color: var(--accent);
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 24px;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #18181b;
+      border: 1px solid var(--accent);
+      color: #fff;
+      padding: 12px 20px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 700;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+      display: none;
+      z-index: 2000;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ADMIN PASSWORT LOGIN -->
+  <div id="login-screen">
+    <div class="login-box">
+      <div class="login-logo">H</div>
+      <div class="login-title">HYSCHOOL <span>PLAYER</span></div>
+      <div class="login-sub">Admin-Passwort erforderlich</div>
+      <form onsubmit="doLogin(event)">
+        <div class="form-group" style="text-align: left;">
+          <input type="password" class="form-control" id="login-pass" placeholder="Passwort eingeben..." required autofocus style="font-size: 15px; padding: 12px 16px;">
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; padding: 12px;">🔒 Anmelden</button>
+      </form>
+    </div>
+  </div>
+
+  <header>
+    <div class="brand">
+      <div class="brand-logo">H</div>
+      <div class="brand-title">HYSCHOOL <span>PLAYER</span> ADMIN</div>
+    </div>
+    <div class="header-actions">
+      <button class="btn btn-outline" onclick="loadUsers()">🔄 Aktualisieren</button>
+      <button class="btn btn-outline" onclick="doLogout()">🚪 Abmelden</button>
+    </div>
+  </header>
+
+  <main>
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="label">Registrierte Player</div>
+        <div class="value highlight" id="stat-total">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">Aktive Lizenzen</div>
+        <div class="value" id="stat-active" style="color: var(--success);">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">Xtream Zugewiesen</div>
+        <div class="value" id="stat-configured">0</div>
+      </div>
+    </div>
+
+    <div class="table-card">
+      <div class="table-header">
+        <div class="table-title">Kunden & Geräte-Verwaltung</div>
+        <input type="text" class="search-input" id="search-input" placeholder="Nach Name, E-Mail oder HWID suchen..." oninput="filterUsers()">
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Kunde & Login</th>
+            <th>Geräte (HWID)</th>
+            <th>Xtream Zuweisung</th>
+            <th>Status</th>
+            <th>Registriert</th>
+            <th style="text-align: right;">Aktion</th>
+          </tr>
+        </thead>
+        <tbody id="user-table-body">
+          <tr>
+            <td colspan="6" style="text-align: center; color: var(--text-muted); padding: 30px;">Lade Kunden...</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+
+  <!-- Edit User Modal -->
+  <div class="modal-overlay" id="edit-modal">
+    <div class="modal">
+      <div class="modal-title">
+        <span>Kunde bearbeiten & Xtream zuweisen</span>
+        <button class="btn btn-outline" onclick="closeModal()" style="padding: 4px 8px;">✕</button>
+      </div>
+
+      <input type="hidden" id="edit-id">
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Benutzername</label>
+          <input type="text" class="form-control" id="edit-username">
+        </div>
+        <div class="form-group">
+          <label>E-Mail</label>
+          <input type="text" class="form-control" id="edit-email">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Kunden-Passwort</label>
+          <input type="text" class="form-control" id="edit-password" placeholder="Passwort für Mehrgeräte-Login">
+        </div>
+        <div class="form-group">
+          <label>Max. Erlaubte Geräte</label>
+          <input type="number" min="1" max="50" class="form-control" id="edit-max-devices" value="1">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+          <label style="margin: 0;">Gebundene Geräte (HWIDs)</label>
+          <button type="button" class="btn btn-outline" onclick="resetHwids()" style="font-size: 11px; padding: 2px 8px; color: var(--danger); border-color: rgba(239,68,68,0.4);">
+            🔄 Geräte-Bindung zurücksetzen
+          </button>
+        </div>
+        <textarea class="form-control" id="edit-hwid" readonly rows="2" style="font-family: 'JetBrains Mono'; font-size: 11.5px; opacity: 0.7;"></textarea>
+      </div>
+
+      <div style="border-top: 1px solid var(--card-border); margin: 18px 0; padding-top: 14px;">
+        <div style="font-size: 12px; font-weight: 800; color: var(--accent); margin-bottom: 12px; text-transform: uppercase;">
+          📺 Xtream Zugangsdaten (Wird direkt im Player geladen)
+        </div>
+
+        <div class="form-group">
+          <label>Xtream Server (Host URL)</label>
+          <input type="text" class="form-control" id="edit-xtream-url" placeholder="http://pro.business-cloud-8.ru:80">
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Xtream Username</label>
+            <input type="text" class="form-control" id="edit-xtream-user" placeholder="22e7694ca4">
+          </div>
+          <div class="form-group">
+            <label>Xtream Password</label>
+            <input type="text" class="form-control" id="edit-xtream-pass" placeholder="Passwort">
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Zugang / Status</label>
+        <select class="form-control" id="edit-status">
+          <option value="1">Aktiviert (Darf schauen)</option>
+          <option value="0">Gesperrt (Kein Zugriff)</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Notizen</label>
+        <input type="text" class="form-control" id="edit-notes" placeholder="z.B. Jahresabo bezahlt via PayPal">
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn btn-outline" onclick="closeModal()">Abbrechen</button>
+        <button class="btn btn-primary" onclick="saveUser()">💾 Speichern</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const API_URL = './api.php';
+    let adminToken = localStorage.getItem('hyschool_admin_pass') || '';
+    let allUsers = [];
+
+    if (adminToken) {
+      checkLoginToken();
+    }
+
+    async function checkLoginToken() {
+      try {
+        const res = await fetch(`${API_URL}?action=verify_admin`, {
+          headers: { 'X-Admin-Password': adminToken }
+        });
+        const data = await res.json();
+        if (data.success) {
+          document.getElementById('login-screen').style.display = 'none';
+          loadUsers();
+        } else {
+          doLogout();
+        }
+      } catch (e) {
+        // Fallback
+        document.getElementById('login-screen').style.display = 'none';
+        loadUsers();
+      }
+    }
+
+    async function doLogin(e) {
+      e.preventDefault();
+      const p = document.getElementById('login-pass').value.trim();
+      if (!p) return alert('Bitte Passwort eingeben!');
+      
+      // Lokaler Modus / Offline Fallback (wenn Datei per Doppelklick geöffnet wird)
+      if (window.location.protocol === 'file:' || !window.location.host) {
+        if (p === '123123') {
+          adminToken = p;
+          localStorage.setItem('hyschool_admin_pass', p);
+          document.getElementById('login-screen').style.display = 'none';
+          loadUsers();
+          return;
+        } else {
+          return alert('Falsches Admin-Passwort! (Passwort ist: 123123)');
+        }
+      }
+
+      try {
+        const res = await fetch(`${API_URL}?action=verify_admin`, {
+          headers: { 'X-Admin-Password': p }
+        });
+        const data = await res.json();
+        if (data.success) {
+          adminToken = p;
+          localStorage.setItem('hyschool_admin_pass', p);
+          document.getElementById('login-screen').style.display = 'none';
+          loadUsers();
+        } else {
+          alert('Falsches Admin-Passwort!');
+        }
+      } catch (err) {
+        // Fallback falls Server noch DNS-Propagiert
+        if (p === '123123') {
+          adminToken = p;
+          localStorage.setItem('hyschool_admin_pass', p);
+          document.getElementById('login-screen').style.display = 'none';
+          loadUsers();
+        } else {
+          alert('Verbindungsfehler oder falsches Passwort: ' + err.message);
+        }
+      }
+    }
+
+    function doLogout() {
+      localStorage.removeItem('hyschool_admin_pass');
+      adminToken = '';
+      document.getElementById('login-screen').style.display = 'flex';
+      document.getElementById('login-pass').value = '';
+    }
+
+    async function loadUsers() {
+      try {
+        const res = await fetch(`${API_URL}?action=get_users`, {
+          headers: { 'X-Admin-Password': adminToken }
+        });
+        if (res.status === 401) {
+          doLogout();
+          return;
+        }
+        allUsers = await res.json();
+        renderTable(allUsers);
+        updateStats(allUsers);
+      } catch (e) {
+        showToast('Fehler beim Laden: ' + e.message);
+      }
+    }
+
+    function updateStats(users) {
+      document.getElementById('stat-total').innerText = users.length;
+      document.getElementById('stat-active').innerText = users.filter(u => u.active).length;
+      document.getElementById('stat-configured').innerText = users.filter(u => u.xtream_url && u.xtream_user).length;
+    }
+
+    function renderTable(users) {
+      const tbody = document.getElementById('user-table-body');
+      if (!users || users.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: var(--text-muted); padding: 30px;">Noch keine Kunden registriert.</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = users.map(u => {
+        const isConfigured = !!(u.xtream_url && u.xtream_user);
+        const hwidList = (u.hwids && Array.isArray(u.hwids)) ? u.hwids : (u.hwid ? [u.hwid] : []);
+        const maxDev = u.max_devices || 1;
+        return `
+          <tr>
+            <td>
+              <div style="font-weight: 800; font-size: 14px;">${escapeHtml(u.username || 'Unbekannt')}</div>
+              <div style="font-size: 11.5px; color: var(--text-muted);">${escapeHtml(u.email || '-')} ${u.password ? '• PW: ' + escapeHtml(u.password) : ''}</div>
+            </td>
+            <td>
+              <div style="font-weight: 700; color: #facc15; font-size: 12px; margin-bottom: 2px;">
+                📱 ${hwidList.length} / ${maxDev} Gerät(e)
+              </div>
+              <span class="hwid-badge" style="display: inline-block; max-width: 170px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                ${escapeHtml(hwidList[0] || 'Kein Gerät')}
+              </span>
+            </td>
+            <td>
+              <span class="xtream-pill ${isConfigured ? 'configured' : ''}">
+                ${isConfigured ? '✓ ' + escapeHtml(u.xtream_url) : '⚠️ Nicht zugewiesen'}
+              </span>
+            </td>
+            <td>
+              <span class="status-badge ${u.active ? 'active' : 'inactive'}">
+                ● ${u.active ? 'Aktiv' : 'Gesperrt'}
+              </span>
+            </td>
+            <td style="color: var(--text-muted); font-size: 12px;">
+              ${escapeHtml(u.created_at || '-')}
+            </td>
+            <td style="text-align: right;">
+              <button class="btn btn-outline" onclick="openEditModal('${u.id}')" style="margin-right: 6px;">✏️ Bearbeiten</button>
+              <button class="btn btn-danger" onclick="deleteUser('${u.id}')">🗑️</button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function filterUsers() {
+      const q = document.getElementById('search-input').value.toLowerCase();
+      const filtered = allUsers.filter(u => 
+        (u.username && u.username.toLowerCase().includes(q)) ||
+        (u.email && u.email.toLowerCase().includes(q)) ||
+        (u.hwid && u.hwid.toLowerCase().includes(q))
+      );
+      renderTable(filtered);
+    }
+
+    function openEditModal(id) {
+      const u = allUsers.find(x => x.id === id);
+      if (!u) return;
+      window._pendingResetHwids = false;
+
+      document.getElementById('edit-id').value = u.id;
+      document.getElementById('edit-username').value = u.username || '';
+      document.getElementById('edit-email').value = u.email || '';
+      document.getElementById('edit-password').value = u.password || '';
+      document.getElementById('edit-max-devices').value = u.max_devices || 1;
+      
+      const hwidList = (u.hwids && Array.isArray(u.hwids)) ? u.hwids : (u.hwid ? [u.hwid] : []);
+      document.getElementById('edit-hwid').value = hwidList.join('\n');
+      
+      document.getElementById('edit-xtream-url').value = u.xtream_url || '';
+      document.getElementById('edit-xtream-user').value = u.xtream_user || '';
+      document.getElementById('edit-xtream-pass').value = u.xtream_pass || '';
+      document.getElementById('edit-status').value = u.active ? "1" : "0";
+      document.getElementById('edit-notes').value = u.notes || '';
+
+      document.getElementById('edit-modal').classList.add('open');
+    }
+
+    function resetHwids() {
+      if (confirm('Möchtest du wirklich alle Geräte-Bindungen (HWIDs) für diesen Kunden löschen? Der Kunde kann sich danach sofort auf neuen Geräten anmelden.')) {
+        document.getElementById('edit-hwid').value = '';
+        window._pendingResetHwids = true;
+        showToast('HWIDs für den Speicher-Vorgang geleert.');
+      }
+    }
+
+    function closeModal() {
+      document.getElementById('edit-modal').classList.remove('open');
+    }
+
+    async function saveUser() {
+      const id = document.getElementById('edit-id').value;
+      const payload = {
+        id: id,
+        username: document.getElementById('edit-username').value,
+        email: document.getElementById('edit-email').value,
+        password: document.getElementById('edit-password').value,
+        max_devices: parseInt(document.getElementById('edit-max-devices').value) || 1,
+        reset_hwids: !!window._pendingResetHwids,
+        xtream_url: document.getElementById('edit-xtream-url').value,
+        xtream_user: document.getElementById('edit-xtream-user').value,
+        xtream_pass: document.getElementById('edit-xtream-pass').value,
+        active: document.getElementById('edit-status').value === "1",
+        notes: document.getElementById('edit-notes').value
+      };
+
+      try {
+        const res = await fetch(`${API_URL}?action=update_user`, {
+          method: 'POST',
+          headers: { 
+            'Content-Type': 'application/json',
+            'X-Admin-Password': adminToken
+          },
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        if (data.success) {
+          showToast('✅ Gespeichert!');
+          closeModal();
+          loadUsers();
+        } else {
+          showToast('Fehler: ' + (data.error || 'Speichern fehlgeschlagen'));
+        }
+      } catch (e) {
+        showToast('Netzwerkfehler: ' + e.message);
+      }
+    }
+
+    async function deleteUser(id) {
+      if (!confirm('Diesen Kunden wirklich löschen?')) return;
+      try {
+        const res = await fetch(`${API_URL}?action=delete_user`, {
+          method: 'POST',
+          headers: { 
+            'Content-Type': 'application/json',
+            'X-Admin-Password': adminToken
+          },
+          body: JSON.stringify({ id: id })
+        });
+        const data = await res.json();
+        if (data.success) {
+          showToast('Kunde gelöscht');
+          loadUsers();
+        }
+      } catch (e) {
+        showToast('Fehler: ' + e.message);
+      }
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.innerText = msg;
+      t.style.display = 'block';
+      setTimeout(() => { t.style.display = 'none'; }, 3500);
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+  </script>
+</body>
+</html>
